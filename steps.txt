@@ -1,0 +1,13 @@
+$ mlaunch init --sharded 2 --replicaset --nodes 1
+
+$ mongo
+
+sh.enableSharding('test')
+sh.shardCollection('test.c', {a:1})
+sh.splitAt('test.c', {a:0})
+
+//wait for balancer to distribute chunks to both shards, sh.status() is your friend
+
+// now warm up the sharding caches
+db.c.find({a:0})
+db.c.find({a:-1})
